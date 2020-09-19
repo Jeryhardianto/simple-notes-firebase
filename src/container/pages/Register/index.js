@@ -3,12 +3,16 @@ import React, {
 } from 'react'
 import './Register.scss'
 import firebase from '../../../config/firebase'
+import Button from '../../../components/atoms/Button'
+import { connect } from 'react-redux'
+import { registerUserAPI } from '../../../config/redux/action'
 
 class Register extends Component {
 
     state = {
         email: '',
-        password: ''
+        password: '',
+        // isLoading: false
     }
     //!handle change text -> merubah value utk text
     handleChangeText = (e) => {
@@ -20,22 +24,26 @@ class Register extends Component {
     }
 
     handleRegisterSubmit = () => {
-        console.log('Email :', this.state.email)
-        console.log('Password :', this.state.password)
+        // console.log('Email :', this.state.email)
+        // console.log('Password :', this.state.password)
 
         const { email, password } = this.state;
-        console.log('Data Sebelum:', email, password);
+        this.props.registerAPI({ email, password });
+
+        // console.log('Data Sebelum:', email, password);
+        //mengubah dulu menjadi true
+        // this.setState({
+        //     isLoading: true
+        // })
+         //dalam 5 detik baru kembali ke buttom normal
+        // setTimeout(() => {
+        //     this.setState({
+        //         isLoading: false
+        //     })
+        //     alert('Terimakasih telah mendaftar silahkan cek email anda untuk verifikasi');
+        // }, 3000);
         //
-        firebase.auth().createUserWithEmailAndPassword(email, password).then(res => {
-            console.log('Success: ', res);
-        })
-            .catch(function (error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // ...
-                console.log(errorCode, errorMessage);
-            });
+
     }
 
     render() {
@@ -45,12 +53,21 @@ class Register extends Component {
                     <p className="auth-title"> Register Page </p>
                     <input className="input" id="email" type="text" placeholder="Email" onChange={this.handleChangeText} />
                     <input className="input" id="password" type="password" placeholder="Password" onChange={this.handleChangeText} />
-                    <button className="btn" onClick={this.handleRegisterSubmit}> Register </button>
-
+                    {/* <button className="btn" onClick={this.handleRegisterSubmit}> Register </button> */}
+                    {/* <Button onClick={this.handleRegisterSubmit} title="Register" loading={this.state.isLoading} /> */}
+                    <Button onClick={this.handleRegisterSubmit} title="Register" loading={this.props.isLoading} />
                 </div>
             </div>
         )
     }
 }
 
-export default Register;
+const reduxState = (state) => ({
+    isLoading: state.isLoading
+})
+
+const reduxDispacth = (dispatch) => ({
+    registerAPI: (data) => dispatch(registerUserAPI(data))
+})
+
+export default connect(reduxState, reduxDispacth)(Register);
