@@ -6,11 +6,13 @@ import * as serviceWorker from './serviceWorker';
 
 import firebase from './config/firebase';
 
-console.log('Config Firebase: ', firebase);
+// console.log('Config Firebase: ', firebase);
 
-ReactDOM.render(<React.StrictMode>
-  <App />
-    </React.StrictMode>,
+ReactDOM.render( < React.StrictMode >
+    <
+    App / >
+    <
+    /React.StrictMode>,
     document.getElementById('root')
 );
 
