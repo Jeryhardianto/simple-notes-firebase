@@ -102,7 +102,8 @@ export const loginUserAPI = (data) => (dispatch) => {
     })
 }
 
-//Create To API
+//* Create To API
+//* push
 export const addDataToAPI = (data) => (dispatch) => {
     //.set => menimpah data yang ditambah di database
     database.ref('notes/' + data.userId).push({
@@ -114,24 +115,50 @@ export const addDataToAPI = (data) => (dispatch) => {
 
 //*GET/mengambil data dari Firebase
 export const getDataFromAPI = (userId) => (dispatch) => {
-    const urlNotes = database.ref('notes/' + userId);
-    return new Promise((resolve, reject) => {
-        urlNotes.on('value', function(snapshot) {
-            console.log('Get Data', snapshot.val());
-            //membuat object menjadi array
-            const data = [];
-            Object.keys(snapshot.val()).map(key => {
-                data.push({
-                    id: key,
-                    data: snapshot.val()[key]
-                })
-            });
+        const urlNotes = database.ref('notes/' + userId);
+        return new Promise((resolve, reject) => {
+            urlNotes.on('value', function(snapshot) {
+                console.log('Get Data', snapshot.val());
+                //membuat object menjadi array
+                const data = [];
+                Object.keys(snapshot.val()).map(key => {
+                    data.push({
+                        id: key,
+                        data: snapshot.val()[key]
+                    })
+                });
 
-            dispatch({
-                type: 'SET_NOTES',
-                value: data
-            })
-            resolve(snapshot.val())
+                dispatch({
+                    type: 'SET_NOTES',
+                    value: data
+                })
+                resolve(snapshot.val())
+            });
+        })
+    }
+    //*PUT/UPDATE
+    //*put
+export const UpdateDataAPI = (data) => (dispatch) => {
+    const urlNotes = database.ref(`notes/${data.userId}/${data.noteId}`);
+    return new Promise((resolve, reject) => {
+        urlNotes.set({
+            title: data.title,
+            content: data.content,
+            date: data.date
+        }, (err) => {
+            if (err) {
+                reject(false)
+            } else {
+                resolve(true)
+            }
         });
+    })
+}
+
+//* DELETE/ 
+export const deleteDataAPI = (data) => (dispatch) => {
+    const urlNotes = database.ref(`notes/${data.userId}/${data.noteId}`);
+    return new Promise((resolve, reject) => {
+        urlNotes.remove();
     })
 }
